@@ -140,6 +140,68 @@ router.get("/verify-email", async (req, res, next) => {
   }
 });
 
+// ── 2b. RESEND VERIFICATION EMAIL ENDPOINT ──
+router.post(
+  "/resend-verification",
+  authLimiter,
+  [body("email").trim().isEmail().withMessage("Valid email is required.").normalizeEmail()],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { email } = req.body;
+
+      // Find user
+      const userResult = await pool.query(
+        "SELECT id, name, is_verified FROM users WHERE email = $1",
+        [email]
+      );
+
+      // Always respond with success to prevent email enumeration attacks
+      if (userResult.rows.length === 0) {
+        return res.status(200).json({
+          message: "If this email is registered and unverified, a new link has been sent.",
+        });
+      }
+
+      const user = userResult.rows[0];
+
+      // If already verified, tell them
+      if (user.is_verified) {
+        return res.status(200).json({
+          message: "This email is already verified. You can log in now.",
+          alreadyVerified: true,
+        });
+      }
+
+      // Generate fresh verification token
+      const newToken = crypto.randomBytes(32).toString("hex");
+      await pool.query(
+        "UPDATE users SET verification_token = $1 WHERE id = $2",
+        [newToken, user.id]
+      );
+
+      // Send verification email
+      try {
+        await sendVerificationEmail(email, user.name, newToken);
+      } catch (mailErr) {
+        console.error("Failed to resend verification email:", mailErr);
+      }
+
+      console.log(`Verification email resent to ${email} (User ID: ${user.id})`);
+
+      res.status(200).json({
+        message: "Verification email resent! Please check your inbox and spam folder.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 // ── 3. LOGIN ENDPOINT ──
 router.post(
   "/login",
