@@ -15,11 +15,9 @@ backend/.env
 frontend/.env
 **/.env
 
-# ── Build Outputs ──
-dist
-build
-**/dist
-**/build
+# ── Build Outputs (specific paths only — do NOT use **/dist as it blocks frontend/src/dist CSS) ──
+frontend/build
+backend/dist
 
 # ── Logs ──
 *.log
