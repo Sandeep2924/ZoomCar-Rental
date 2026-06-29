@@ -38,7 +38,7 @@ const Login = ({ isOpen, onClose, onLoginSuccess, onSwitchToSignup }) => {
       const data = await response.json();
       
       if (response.ok) {
-        onLoginSuccess && onLoginSuccess(data.user);
+        onLoginSuccess && onLoginSuccess(data.user, data.token);
         onClose();
       } else {
         setError(data.error || "Invalid email or password.");
@@ -64,7 +64,7 @@ const Login = ({ isOpen, onClose, onLoginSuccess, onSwitchToSignup }) => {
       const data = await response.json();
       
       if (response.ok) {
-        onLoginSuccess && onLoginSuccess(data.user);
+        onLoginSuccess && onLoginSuccess(data.user, data.token);
         onClose();
       } else {
         setError(data.error || "Google login failed.");

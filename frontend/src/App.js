@@ -19,30 +19,47 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [verificationAlert, setVerificationAlert] = useState(null);
 
-  const handleLoginSuccess = (userData) => setUser(userData);
+  const handleLoginSuccess = (userData, token) => {
+    if (token) {
+      localStorage.setItem("session_token", token);
+    }
+    setUser(userData);
+  };
   
   const handleLogout = async () => {
+    const token = localStorage.getItem("session_token");
     try {
       await fetch(`${API_URL}/api/auth/logout`, {
         method: "POST",
+        headers: {
+          "Authorization": token ? `Bearer ${token}` : "",
+        },
         credentials: "include",
       });
     } catch (error) {
       console.error("Logout error:", error);
     }
+    localStorage.removeItem("session_token");
     setUser(null);
   };
 
   // Restore session on load
   useEffect(() => {
     const checkSession = async () => {
+      const token = localStorage.getItem("session_token");
       try {
         const response = await fetch(`${API_URL}/api/auth/me`, {
+          headers: {
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
           credentials: "include",
         });
         if (response.ok) {
           const data = await response.json();
           setUser(data.user);
+        } else {
+          // If token is invalid or expired, clear it
+          localStorage.removeItem("session_token");
         }
       } catch (error) {
         console.error("Failed to restore session:", error);

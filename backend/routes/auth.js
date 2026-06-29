@@ -225,6 +225,7 @@ router.post(
 
       res.status(200).json({
         message: "Logged in successfully.",
+        token,
         user: {
           id: user.id,
           name: user.name,
@@ -309,6 +310,7 @@ router.post(
 
       res.status(200).json({
         message: "Logged in via Google successfully.",
+        token,
         user: {
           id: user.id,
           name: user.name,

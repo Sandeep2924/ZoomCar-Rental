@@ -23,9 +23,13 @@ function Profile() {
 
   useEffect(() => {
     const fetchProfileAndBookings = async () => {
+      const token = localStorage.getItem("session_token");
       try {
         // 1. Fetch user session
         const meResponse = await fetch(`${API_URL}/api/auth/me`, {
+          headers: {
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
           credentials: "include",
         });
         
@@ -44,6 +48,9 @@ function Profile() {
 
         // 2. Fetch user's bookings
         const bookingsResponse = await fetch(`${API_URL}/api/bookings`, {
+          headers: {
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
           credentials: "include",
         });
         
@@ -66,11 +73,15 @@ function Profile() {
 
   // Handle Cancellation submission
   const handleCancelBooking = async (id) => {
+    const token = localStorage.getItem("session_token");
     setIsSubmittingCancellation(true);
     setCancellingError("");
     try {
       const response = await fetch(`${API_URL}/api/bookings/${id}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": token ? `Bearer ${token}` : "",
+        },
         credentials: "include"
       });
 

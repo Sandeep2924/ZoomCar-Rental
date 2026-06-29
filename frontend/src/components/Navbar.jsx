@@ -30,8 +30,12 @@ const Navbar = ({ user, onLoginSuccess, onLogout }) => {
       setBookingCount(0);
       return;
     }
+    const token = localStorage.getItem("session_token");
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:5000"}/api/bookings`, {
+        headers: {
+          "Authorization": token ? `Bearer ${token}` : "",
+        },
         credentials: "include",
       });
       if (response.ok) {
