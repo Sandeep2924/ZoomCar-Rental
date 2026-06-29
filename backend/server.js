@@ -21,8 +21,12 @@ initializeDatabase()
   .then(() => {
     // ── Middleware Configurations ──
     
-    // 1. Helmet for secure HTTP headers
-    app.use(helmet());
+    // 1. Helmet for secure HTTP headers (allow cross-origin popups for Google OAuth)
+    app.use(
+      helmet({
+        crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+      })
+    );
 
     const allowedOrigins = [
       process.env.FRONTEND_URL,
