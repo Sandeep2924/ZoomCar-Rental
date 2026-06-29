@@ -106,6 +106,7 @@ const Login = ({ isOpen, onClose, onLoginSuccess, onSwitchToSignup }) => {
               size="large"
               width="100%"
               text="signin_with"
+              uxMode="redirect"
             />
             <div style={{ display: "flex", alignItems: "center", width: "100%", margin: "15px 0 10px 0", color: "#888", fontSize: "0.85rem" }}>
               <div style={{ flex: 1, height: "1px", backgroundColor: "#eee" }}></div>
