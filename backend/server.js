@@ -33,7 +33,8 @@ initializeDatabase()
       "http://localhost:3000",
       "http://127.0.0.1:3000",
       "https://zoom-car-rental-tau.vercel.app",
-      "https://zoom-car-rental-sandeep2924s-projects.vercel.app"
+      "https://zoom-car-rental-sandeep2924s-projects.vercel.app",
+      "https://zoomcar-rental.vercel.app",
     ].filter(Boolean).map(url => url.replace(/\/$/, ""));
     app.use(
       cors({
@@ -42,9 +43,10 @@ initializeDatabase()
           if (!origin) return callback(null, true);
           const normalizedOrigin = origin.replace(/\/$/, "");
           
-          // Check if origin matches allowedOrigins OR is a Vercel subdomain for ZoomCar
+          // Check exact list OR any Vercel subdomain containing zoom-car-rental or zoomcar-rental
           const isAllowed = allowedOrigins.indexOf(normalizedOrigin) !== -1 ||
-                            (normalizedOrigin.includes("zoom-car-rental") && normalizedOrigin.endsWith(".vercel.app"));
+                            (normalizedOrigin.includes("zoom-car-rental") && normalizedOrigin.endsWith(".vercel.app")) ||
+                            (normalizedOrigin.includes("zoomcar-rental") && normalizedOrigin.endsWith(".vercel.app"));
           
           if (!isAllowed) {
             const msg = `The CORS policy for this site does not allow access from origin: ${origin}`;

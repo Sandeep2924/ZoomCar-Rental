@@ -178,7 +178,7 @@ const Navbar = ({ user, onLoginSuccess, onLogout }) => {
       <Login
         isOpen={showLogin}
         onClose={() => setShowLogin(false)}
-        onLoginSuccess={(email) => { onLoginSuccess && onLoginSuccess(email); }}
+        onLoginSuccess={(userData, token) => { onLoginSuccess && onLoginSuccess(userData, token); }}
         onSwitchToSignup={() => setShowSignup(true)}
       />
       <Signup

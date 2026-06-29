@@ -57,9 +57,13 @@ function App() {
         });
         if (response.ok) {
           const data = await response.json();
-          setUser(data.user);
+          if (data.authenticated && data.user) {
+            setUser(data.user);
+          } else {
+            // Guest: no user, clear any stale token
+            localStorage.removeItem("session_token");
+          }
         } else {
-          // If token is invalid or expired, clear it
           localStorage.removeItem("session_token");
         }
       } catch (error) {

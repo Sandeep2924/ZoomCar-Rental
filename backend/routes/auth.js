@@ -7,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 const { OAuth2Client } = require("google-auth-library");
 const { pool } = require("../config/db");
 const { sendVerificationEmail } = require("../services/email");
-const { requireAuth } = require("../middleware/auth");
+const { requireAuth, optionalAuth } = require("../middleware/auth");
 const { authLimiter } = require("../middleware/rateLimit");
 
 require("dotenv").config();
@@ -335,8 +335,12 @@ router.post("/logout", (req, res) => {
 });
 
 // ── 6. GET CURRENT SESSION USER (ME) ──
-router.get("/me", requireAuth, (req, res) => {
+router.get("/me", optionalAuth, (req, res) => {
+  if (!req.user) {
+    return res.status(200).json({ authenticated: false, user: null });
+  }
   res.status(200).json({
+    authenticated: true,
     user: {
       id: req.user.id,
       name: req.user.name,
