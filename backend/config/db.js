@@ -10,7 +10,9 @@ if (!connectionString) {
 
 const pool = new Pool({
   connectionString,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+  ssl: {
+    rejectUnauthorized: false, // Required for Neon + Render free tier (shared CA)
+  },
 });
 
 const initializeDatabase = async () => {

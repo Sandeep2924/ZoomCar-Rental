@@ -28,8 +28,10 @@ initializeDatabase()
     const allowedOrigins = [
       process.env.FRONTEND_URL || "http://localhost:3000",
       "http://localhost:3000",
-      "http://127.0.0.1:3000"
-    ];
+      "http://127.0.0.1:3000",
+      // Add your Vercel production URL here once deployed:
+      // "https://your-app.vercel.app"
+    ].filter(Boolean);
     app.use(
       cors({
         origin: (origin, callback) => {
