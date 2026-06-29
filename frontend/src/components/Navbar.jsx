@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Logo from "../images/logo/logo.png";
 import "../dist/nav_style.css";
@@ -25,7 +25,7 @@ const Navbar = ({ user, onLoginSuccess, onLogout }) => {
   }, [showLogin, showSignup, navOpen]);
 
   // Fetch active bookings count dynamically
-  const fetchBookingCount = async () => {
+  const fetchBookingCount = useCallback(async () => {
     if (!user) {
       setBookingCount(0);
       return;
@@ -41,13 +41,13 @@ const Navbar = ({ user, onLoginSuccess, onLogout }) => {
     } catch (e) {
       // Ignored
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchBookingCount();
     window.addEventListener("booking-updated", fetchBookingCount);
     return () => window.removeEventListener("booking-updated", fetchBookingCount);
-  }, [user]);
+  }, [fetchBookingCount]);
 
   const navLinks = [
     { to: "/",             label: "Home"           },
