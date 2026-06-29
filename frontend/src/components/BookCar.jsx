@@ -74,8 +74,12 @@ function BookCar() {
   // Auto-fill user details if logged in
   useEffect(() => {
     const fetchUser = async () => {
+      const token = localStorage.getItem("session_token");
       try {
         const response = await fetch(`${API_URL}/api/auth/me`, {
+          headers: {
+            "Authorization": token ? `Bearer ${token}` : "",
+          },
           credentials: "include",
         });
         if (response.ok) {
@@ -159,11 +163,13 @@ function BookCar() {
 
     // Submit booking request to backend securely
     const submitBooking = async () => {
+      const token = localStorage.getItem("session_token");
       try {
         const response = await fetch(`${API_URL}/api/bookings`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : "",
           },
           body: JSON.stringify({
             carType,
