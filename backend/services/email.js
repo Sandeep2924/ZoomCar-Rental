@@ -15,6 +15,7 @@ const getTransporter = () => {
       host: "smtp.gmail.com",
       port: 587,
       secure: false, // TLS upgrades to secure via STARTTLS
+      family: 4,     // Force IPv4 to prevent Render IPv6 DNS timeout
       auth: {
         user: emailUser,
         pass: emailPass, // Google App Password (16 characters, no spaces)
@@ -35,8 +36,8 @@ const getTransporter = () => {
 };
 
 const sendVerificationEmail = async (email, name, token) => {
-  const backendPort = process.env.PORT || 5000;
-  const verifyUrl = `http://localhost:${backendPort}/api/auth/verify-email?token=${token}`;
+  const backendBase = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+  const verifyUrl = `${backendBase}/api/auth/verify-email?token=${token}`;
 
   // Print verification link in console for local testing
   console.log(`\n==================================================`);
