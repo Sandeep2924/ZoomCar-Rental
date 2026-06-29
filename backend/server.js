@@ -71,6 +71,16 @@ initializeDatabase()
     app.use("/api/bookings", bookingRoutes);
     app.use("/api/contact", contactRoutes);
 
+    // Root greeting endpoint
+    app.get("/", (req, res) => {
+      res.status(200).json({
+        message: "Welcome to the ZoomCarz Secure API Portal.",
+        status: "active",
+        version: "1.0.0",
+        documentation: "https://github.com/Sandeep2924/Car-Rental-Web-Application"
+      });
+    });
+
     // Health check endpoint
     app.get("/health", (req, res) => {
       res.status(200).json({ status: "healthy", timestamp: new Date().toISOString() });
