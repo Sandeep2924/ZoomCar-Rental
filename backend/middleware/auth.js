@@ -4,11 +4,16 @@ require("dotenv").config();
 
 const requireAuth = async (req, res, next) => {
   try {
-    let token = req.cookies.token;
+    let token = null;
 
-    // Fallback to Authorization Header (Bearer token)
-    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+    // Prioritize Authorization Header (Bearer token)
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
       token = req.headers.authorization.split(" ")[1];
+    }
+
+    // Fallback to cookie
+    if (!token) {
+      token = req.cookies.token;
     }
 
     if (!token) {
@@ -46,11 +51,16 @@ const requireAuth = async (req, res, next) => {
 
 const optionalAuth = async (req, res, next) => {
   try {
-    let token = req.cookies.token;
+    let token = null;
 
-    // Fallback to Authorization Header (Bearer token)
-    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+    // Prioritize Authorization Header (Bearer token)
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
       token = req.headers.authorization.split(" ")[1];
+    }
+
+    // Fallback to cookie
+    if (!token) {
+      token = req.cookies.token;
     }
 
     if (!token) {
