@@ -7,7 +7,7 @@ import "../dist/profile_style.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-function Profile() {
+function Profile({ user, sessionLoading }) {
   const [bookings, setBookings] = useState([]);
   const [profileUser, setProfileUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,31 +22,22 @@ function Profile() {
   const [isSubmittingCancellation, setIsSubmittingCancellation] = useState(false);
 
   useEffect(() => {
-    const fetchProfileAndBookings = async () => {
+    if (sessionLoading) return;
+
+    if (!user) {
+      setError("Please log in to view your profile.");
+      setLoading(false);
+      setLoadingBookings(false);
+      const timer = setTimeout(() => navigate("/"), 2500);
+      return () => clearTimeout(timer);
+    }
+
+    setProfileUser(user);
+    setLoading(false);
+
+    const fetchBookings = async () => {
       const token = localStorage.getItem("session_token");
       try {
-        // 1. Fetch user session
-        const meResponse = await fetch(`${API_URL}/api/auth/me`, {
-          headers: {
-            "Authorization": token ? `Bearer ${token}` : "",
-          },
-          credentials: "include",
-        });
-        
-        if (!meResponse.ok) {
-          setError("Please log in to view your profile.");
-          setLoading(false);
-          setLoadingBookings(false);
-          // Redirect to home page after a small delay
-          setTimeout(() => navigate("/"), 2500);
-          return;
-        }
-        
-        const userData = await meResponse.json();
-        setProfileUser(userData.user);
-        setLoading(false);
-
-        // 2. Fetch user's bookings
         const bookingsResponse = await fetch(`${API_URL}/api/bookings`, {
           headers: {
             "Authorization": token ? `Bearer ${token}` : "",
@@ -63,13 +54,12 @@ function Profile() {
       } catch (err) {
         setError("Network error. Unable to load profile data.");
       } finally {
-        setLoading(false);
         setLoadingBookings(false);
       }
     };
 
-    fetchProfileAndBookings();
-  }, [navigate]);
+    fetchBookings();
+  }, [user, sessionLoading, navigate]);
 
   // Handle Cancellation submission
   const handleCancelBooking = async (id) => {

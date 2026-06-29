@@ -16,6 +16,7 @@ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [verificationAlert, setVerificationAlert] = useState(null);
 
@@ -63,6 +64,8 @@ function App() {
         }
       } catch (error) {
         console.error("Failed to restore session:", error);
+      } finally {
+        setSessionLoading(false);
       }
     };
     checkSession();
@@ -137,7 +140,7 @@ function App() {
         <Route path="testimonials"         element={<TestimonialsPage />} />
         <Route path="team"                 element={<Team />}             />
         <Route path="contact"              element={<Contact />}          />
-        <Route path="profile"              element={<Profile />}          />
+        <Route path="profile"              element={<Profile user={user} sessionLoading={sessionLoading} />}          />
         <Route path="terms"                element={<Terms />}            />
       </Routes>
     </GoogleOAuthProvider>
