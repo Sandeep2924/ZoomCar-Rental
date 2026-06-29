@@ -12,11 +12,19 @@ const getTransporter = () => {
   if (emailUser && emailPass) {
     console.log(`Configuring secure Gmail transporter for: ${emailUser}`);
     transporterInstance = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // TLS upgrades to secure via STARTTLS
       auth: {
         user: emailUser,
         pass: emailPass, // Google App Password (16 characters, no spaces)
       },
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 15000, // 15 seconds
+      greetingTimeout: 15000,
+      socketTimeout: 15000
     });
   } else {
     console.warn("Gmail SMTP credentials not configured in .env. Emails will only be logged to the console.");
