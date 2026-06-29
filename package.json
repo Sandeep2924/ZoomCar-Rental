@@ -3,15 +3,12 @@
   "version": "1.0.0",
   "description": "Master workspace for ZoomCarz Full Stack Application",
   "scripts": {
-    "install-all": "npm install --prefix frontend && npm install --prefix backend",
     "server": "npm start --prefix backend",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
-  },
-  "dependencies": {
-    "build": "^0.1.4"
   }
 }
