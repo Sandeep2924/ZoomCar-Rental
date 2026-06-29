@@ -36,10 +36,11 @@ const signToken = (userId) => {
 
 // Helper to set HttpOnly Cookie
 const setAuthCookie = (res, token) => {
+  const isProd = process.env.NODE_ENV === "production";
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax", // Must be "none" for cross-site cookie sharing in production
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
   });
 };
@@ -322,10 +323,11 @@ router.post(
 
 // ── 5. LOGOUT ENDPOINT ──
 router.post("/logout", (req, res) => {
+  const isProd = process.env.NODE_ENV === "production";
   res.clearCookie("token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
   });
   res.status(200).json({ message: "Logged out successfully." });
 });
